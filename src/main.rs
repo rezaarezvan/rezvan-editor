@@ -1,17 +1,17 @@
 use crossterm::terminal;
 
-pub mod ec;
-pub mod er;
+pub mod editorcontents;
+pub mod editorrows;
 pub mod reader;
-pub mod cc;
-pub mod op;
-pub mod cu;
-pub mod e;
+pub mod cursorcontroller;
+pub mod output;
+pub mod cleanup;
+pub mod editor;
 
 fn main() -> crossterm::Result<()> {
-    let _clean_up = cu::CleanUp;
+    let _clean_up = cleanup::CleanUp;
     terminal::enable_raw_mode()?;
-    let mut editor = e::Editor::new();
+    let mut editor = editor::Editor::new();
     while editor.run()? {}
     Ok(())
 }

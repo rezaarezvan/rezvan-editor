@@ -2,18 +2,18 @@ use crossterm::event::*;
 use crossterm::event;
 
 use crate::reader;
-use crate::op;
+use crate::output;
 
 pub struct Editor {
     reader: reader::Reader,
-    output: op::Output,
+    output: output::Output,
 }
 
 impl Editor {
     pub fn new() -> Self {
         Self { 
             reader: reader::Reader,
-            output: op::Output::new(),
+            output: output::Output::new(),
         }
     }
 

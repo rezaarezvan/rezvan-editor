@@ -4,17 +4,17 @@ use crossterm::{cursor, execute, queue, terminal};
 use std::io::stdout;
 use std::io::Write;
 use std::{cmp};
-use crate::er;
-use crate::ec;
-use crate::cc;
+use crate::editorrows;
+use crate::editorcontents;
+use crate::cursorcontroller;
 
 const VERSION: f32 = 0.1;
 
 pub struct Output {
     pub win_size: (usize, usize),
-    pub editor_contents: ec::EditorContents,
-    pub cursor_controller: cc::CursorController,
-    pub editor_rows: er::EditorRows
+    pub editor_contents: editorcontents::EditorContents,
+    pub cursor_controller: cursorcontroller::CursorController,
+    pub editor_rows: editorrows::EditorRows
 }
 
 impl Output {
@@ -24,9 +24,9 @@ impl Output {
             .unwrap();
         Self { 
             win_size,
-            editor_contents: ec::EditorContents::new(),
-            cursor_controller: cc::CursorController::new(win_size),
-            editor_rows: er::EditorRows::new(),
+            editor_contents: editorcontents::EditorContents::new(),
+            cursor_controller: cursorcontroller::CursorController::new(win_size),
+            editor_rows: editorrows::EditorRows::new(),
         }
     }
 

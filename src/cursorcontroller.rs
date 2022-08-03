@@ -1,6 +1,6 @@
 use crossterm::event::*;
 use std::{cmp};
-use crate::er;
+use crate::editorrows;
 
 pub struct CursorController {
     pub cursor_x: usize,
@@ -24,7 +24,7 @@ impl CursorController {
         }
     }
 
-    pub fn move_cursor(&mut self, direction: char, editor_rows: &er::EditorRows) {
+    pub fn move_cursor(&mut self, direction: char, editor_rows: &editorrows::EditorRows) {
         let number_of_rows = editor_rows.number_of_rows();
         match direction {
             'w' => {
@@ -56,7 +56,7 @@ impl CursorController {
         }
     }
 
-    pub fn move_cursor_arrows(&mut self, direction: KeyCode, editor_rows: &er::EditorRows) {
+    pub fn move_cursor_arrows(&mut self, direction: KeyCode, editor_rows: &editorrows::EditorRows) {
         let number_of_rows = editor_rows.number_of_rows();
         match direction {
             KeyCode::Up => {
