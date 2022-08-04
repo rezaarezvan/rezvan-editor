@@ -161,7 +161,3 @@ impl CursorController {
     }
 
 }
-
-pub fn main() {
-    
-}

@@ -1,4 +1,5 @@
 use crossterm::event::*;
+use crossterm::style::*;
 use crossterm::terminal::ClearType;
 use crossterm::{cursor, execute, queue, terminal, style};
 
@@ -244,7 +245,7 @@ impl Output {
         for i in 0..screen_rows {
             let file_row = i + self.cursor_controller.row_offset;
             if file_row >= self.editor_rows.number_of_rows() {
-                if /*add this condition*/ self.editor_rows.number_of_rows() == 0 && i == screen_rows / 3 {
+                if self.editor_rows.number_of_rows() == 0 && i == screen_rows / 3 {
                     let mut welcome = format!("Rezvan Editor --- Version {}", VERSION);
                     if welcome.len() > screen_columns {
                         welcome.truncate(screen_columns)
@@ -264,8 +265,25 @@ impl Output {
                 let column_offset = self.cursor_controller.column_offset;
                 let len = cmp::min(row.len().saturating_sub(column_offset), screen_columns);
                 let start = if len == 0 { 0 } else { column_offset };
-                self.editor_contents
-                    .push_str(&row[start..start + len])
+
+                row[start..start + len].chars().for_each(|c| {
+                    if c.is_digit(10) {
+                        let _ = queue!(self.editor_contents, SetForegroundColor(Color::Yellow));
+                        self.editor_contents.push(c);
+                        let _ = queue!(self.editor_contents, ResetColor);
+                    } 
+                    
+                    else if c.is_digit(16) && row.as_bytes()[0] as char == '#' {
+                        let _ = queue!(self.editor_contents, SetForegroundColor(Color::Red));
+                        self.editor_contents.push(c);
+                        let _ = queue!(self.editor_contents, ResetColor);
+                    }
+
+                    else {
+                        self.editor_contents.push(c);
+                    }
+                });
+                //self.editor_contents.push_str(&row[start..start + len])
             }
             queue!(
                 self.editor_contents,

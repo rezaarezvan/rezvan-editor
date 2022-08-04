@@ -1,5 +1,6 @@
 use std::{env, fs};
 use std::path::PathBuf;
+
 use std::io;
 use std::io::ErrorKind;
 use std::io::Write;
@@ -10,14 +11,13 @@ use crate::editorrows;
 const TAB_STOP: usize = 4;
 
 pub struct EditorRows {
-    pub row_contents: Vec<row::Row>,
-    pub filename: Option<PathBuf>,
+    pub row_contents : Vec<row::Row>,
+    pub filename     : Option<PathBuf>,
 }
 
 impl EditorRows {
     pub fn new() -> Self {
         let mut arg = env::args();
-
         match arg.nth(1) {
             None => Self {
                 row_contents: Vec::new(),
@@ -31,8 +31,7 @@ impl EditorRows {
         let file_contents = fs::read_to_string(&file).expect("Unable to read file");
         Self {
             filename: Some(file),
-            row_contents: file_contents
-                .lines()
+            row_contents: file_contents.lines()
                 .map(|it| {
                     let mut r = row::Row::new(it.into(), String::new());
                     Self::render_row(&mut r);
@@ -41,8 +40,7 @@ impl EditorRows {
                 .collect(),
         }
     }
-
-    /* add functions*/
+    
     pub fn get_render(&self, at: usize) -> &String {
         &self.row_contents[at].render
     }
@@ -65,6 +63,7 @@ impl EditorRows {
             .row_content
             .chars()
             .fold(0, |acc, next| acc + if next == '\t' { TAB_STOP } else { 1 });
+
         row.render = String::with_capacity(capacity);
         row.row_content.chars().for_each(|c| {
             index += 1;
@@ -101,6 +100,7 @@ impl EditorRows {
                     .map(|it| it.row_content.as_str())
                     .collect::<Vec<&str>>()
                     .join("\n");
+
                 file.set_len(contents.len() as u64)?;
                 file.write_all(contents.as_bytes())?;
                 Ok(contents.as_bytes().len())
@@ -114,9 +114,5 @@ impl EditorRows {
         previous_row.row_content.push_str(&current_row.row_content);
         Self::render_row(previous_row);
     }
-
-}
-
-pub fn main() {
 
 }

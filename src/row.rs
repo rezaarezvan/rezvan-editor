@@ -1,9 +1,11 @@
 use crate::editorrows;
+use crate::syntax;
 
 #[derive(Default)]
 pub struct Row {
-    pub row_content: String,
-    pub render: String,
+    pub row_content : String,
+    pub render      : String,
+    pub highlight: Vec<syntax::HighlightType>,
 }
 
 impl Row {
@@ -11,6 +13,7 @@ impl Row {
         Self {
             row_content,
             render,
+            highlight:Vec::new(),
         }
     }
 

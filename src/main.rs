@@ -11,6 +11,7 @@ pub mod row;
 pub mod status;
 pub mod searchindex;
 pub mod searchdirection;
+pub mod syntax;
 
 fn main() -> crossterm::Result<()> {
     let _clean_up = cleanup::CleanUp;

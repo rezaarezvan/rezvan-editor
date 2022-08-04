@@ -23,10 +23,9 @@ impl StatusMessage {
             if time.elapsed() > Duration::from_secs(5) {
                 self.message = None;
                 self.set_time = None;
-                None
-            } else {
-                Some(self.message.as_ref().unwrap())
-            }
+                return None;
+            } 
+            return Some(self.message.as_ref().unwrap())
         })
     }
 }

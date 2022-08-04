@@ -42,7 +42,3 @@ impl io::Write for EditorContents {
         out
     }
 }
-
-pub fn main() {
-
-}
