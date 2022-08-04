@@ -7,10 +7,14 @@ use crate::output;
 use crate::prompt;
 
 const QUIT_TIMES: u8 = 1;
-static mut test: i32 = 0;
 
+pub enum MODE {
+   Normal,
+   Insert,
+}
 
 pub struct Editor {
+    mode: MODE,
     reader: reader::Reader,
     output: output::Output,
     quit_times: u8,
@@ -22,6 +26,7 @@ impl Editor {
             reader: reader::Reader,
             output: output::Output::new(),
             quit_times: QUIT_TIMES,
+            mode: MODE::Normal,
         }
     }
 
@@ -150,36 +155,31 @@ impl Editor {
                 code: KeyCode::Char('i'), 
                 modifiers: KeyModifiers::NONE, 
             } => {
-                unsafe {
-                    test += 1;
+                    self.mode = MODE::Insert;
+                    self.output.status_message.set_message(format!("INSERT"));
                 }
-            }   
-
 
             KeyEvent {
                 code: code @ (KeyCode::Char(..) | KeyCode::Tab),
                 modifiers: KeyModifiers::NONE | KeyModifiers::SHIFT,
-            } =>  {
-                    unsafe {
-                        if test == 1 { 
+            } => {
+                    if matches!(self.mode, MODE::Insert) {
                         self.output.insert_char(match code {
                             KeyCode::Tab => '\t',
                             KeyCode::Char(ch) => ch,
                             _ => unreachable!(),
-                            });
-                        }
-
+                        });
                     }
                 }
+                
 
             KeyEvent { 
                 code: KeyCode::Esc, 
                 modifiers: KeyModifiers::NONE, 
-            } => {
-                unsafe {
-                    test -= 1;
+            } => { 
+                    self.mode = MODE::Normal;
+                    self.output.status_message.set_message(format!("NORMAL"));
                 }
-            }   
 
             _ => {}
         }
