@@ -49,7 +49,7 @@ macro_rules! prompt {
                 } => {
                     if !input.is_empty() {
                         output.status_message.set_message(String::new());
-                        $callback(output, &input, KeyCode::Enter); // add line
+                        $callback(output, &input, KeyCode::Enter);
                         break;
                     }
                 }
@@ -58,7 +58,7 @@ macro_rules! prompt {
                 } => {
                     output.status_message.set_message(String::new());
                     input.clear();
-                    $callback(output, &input, KeyCode::Esc); // add line
+                    $callback(output, &input, KeyCode::Esc);
                     break;
                 }
                 KeyEvent {
@@ -79,7 +79,7 @@ macro_rules! prompt {
                 }
                 _ => {}
             }
-            $callback(output, &input, key_event.code); // add line
+            $callback(output, &input, key_event.code);
         }
         if input.is_empty() {
             None
@@ -301,7 +301,7 @@ impl Output {
         queue!(self.editor_contents, cursor::Hide, cursor::MoveTo(0, 0))?;
         self.draw_rows();
         self.draw_status_bar();
-        self.draw_message_bar(); // add line
+        self.draw_message_bar();
         let cursor_x = self.cursor_controller.render_x - self.cursor_controller.column_offset;
         let cursor_y = self.cursor_controller.cursor_y - self.cursor_controller.row_offset;
         queue!(
