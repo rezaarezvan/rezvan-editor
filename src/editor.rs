@@ -7,6 +7,8 @@ use crate::output;
 use crate::prompt;
 
 const QUIT_TIMES: u8 = 1;
+static mut test: i32 = 0;
+
 
 pub struct Editor {
     reader: reader::Reader,
@@ -143,16 +145,42 @@ impl Editor {
                 code: KeyCode::Enter,
                 modifiers: KeyModifiers::NONE,
             } => self.output.inser_newline(),
+                      
+            KeyEvent { 
+                code: KeyCode::Char('i'), 
+                modifiers: KeyModifiers::NONE, 
+            } => {
+                unsafe {
+                    test += 1;
+                }
+            }   
+
 
             KeyEvent {
                 code: code @ (KeyCode::Char(..) | KeyCode::Tab),
                 modifiers: KeyModifiers::NONE | KeyModifiers::SHIFT,
-            } => self.output.insert_char(match code {
-                KeyCode::Tab => '\t',
-                KeyCode::Char(ch) => ch,
-                _ => unreachable!(),
-            }),
-        
+            } =>  {
+                    unsafe {
+                        if test == 1 { 
+                        self.output.insert_char(match code {
+                            KeyCode::Tab => '\t',
+                            KeyCode::Char(ch) => ch,
+                            _ => unreachable!(),
+                            });
+                        }
+
+                    }
+                }
+
+            KeyEvent { 
+                code: KeyCode::Esc, 
+                modifiers: KeyModifiers::NONE, 
+            } => {
+                unsafe {
+                    test -= 1;
+                }
+            }   
+
             _ => {}
         }
         Ok(true)
