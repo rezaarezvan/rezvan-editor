@@ -48,13 +48,20 @@ impl Editor {
             }
 
             KeyEvent {
-                code: KeyCode::Char(val @ ('w' | 'a' | 's' | 'd')),
+                code: KeyCode::Char(val @ ('h' | 'j' | 'k' | 'l')),
                 modifiers: KeyModifiers::NONE,
-            } => self.output.move_cursor(val),
+            } => { 
+                    if matches!(self.mode, MODE::Normal) {
+                        self.output.move_cursor(val);
+                    }
+                    else {
+                        self.output.insert_char(val);
+                    }
+            }
 
             KeyEvent {
-                code: KeyCode::Char(val @ '4'),
-                modifiers: KeyModifiers::ALT,
+                code: KeyCode::Char(val @ 'e'),
+                modifiers: KeyModifiers::CONTROL,
             } => self.output.move_cursor(val),
 
             KeyEvent {
@@ -62,7 +69,7 @@ impl Editor {
                 (KeyCode::Up 
                 | KeyCode::Down 
                 | KeyCode::Left 
-            | KeyCode::Right
+                | KeyCode::Right
                 | KeyCode::Home
                 | KeyCode::End),
                 modifiers: KeyModifiers::NONE,
@@ -114,21 +121,6 @@ impl Editor {
                 })?;
             }
 
-            /* TODO: Fix overwrite */
-            KeyEvent {
-                code: KeyCode::Char('s'),
-                modifiers: KeyModifiers::ALT,
-            } => {
-                self.output.editor_rows.filename =
-                        prompt!(&mut self.output, "Save as : {}").map(|it| it.into());
-                self.output.editor_rows.save().map(|len| {
-                    self.output
-                        .status_message
-                        .set_message(format!("{} bytes written to disk", len));
-                    self.output.dirty = 0
-                })?;
-            } 
-
             KeyEvent { 
                 code: KeyCode::Char('f'), 
                 modifiers: KeyModifiers::CONTROL, 
@@ -149,14 +141,36 @@ impl Editor {
             KeyEvent {
                 code: KeyCode::Enter,
                 modifiers: KeyModifiers::NONE,
-            } => self.output.inser_newline(),
-                      
+            } => {
+                    if matches!(self.mode, MODE::Insert) {
+                        self.output.inser_newline();
+                    }
+                }
+
             KeyEvent { 
                 code: KeyCode::Char('i'), 
                 modifiers: KeyModifiers::NONE, 
+            } => {  
+                    if matches!(self.mode, MODE::Normal) {
+                        self.mode = MODE::Insert;
+                        self.output.status_message.set_message(format!("INSERT"));
+                    }
+                    else {
+                        self.output.insert_char('i');
+                    }
+                }
+
+            KeyEvent { 
+                code: KeyCode::Char('a'), 
+                modifiers: KeyModifiers::NONE, 
             } => {
-                    self.mode = MODE::Insert;
-                    self.output.status_message.set_message(format!("INSERT"));
+                    if matches!(self.mode, MODE::Normal) {
+                        self.mode = MODE::Insert;
+                        self.output.status_message.set_message(format!("INSERT"));
+                    }
+                    else {
+                        self.output.insert_char('a');
+                    }
                 }
 
             KeyEvent {
@@ -172,7 +186,6 @@ impl Editor {
                     }
                 }
                 
-
             KeyEvent { 
                 code: KeyCode::Esc, 
                 modifiers: KeyModifiers::NONE, 

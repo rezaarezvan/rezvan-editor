@@ -32,12 +32,12 @@ impl CursorController {
     pub fn move_cursor(&mut self, direction: char, editor_rows: &editorrows::EditorRows) {
         let number_of_rows = editor_rows.number_of_rows();
         match direction {
-            'w' => {
+            'k' => {
                 self.cursor_y = self.cursor_y.saturating_sub(1);
             }
 
 
-            'a' => {
+            'h' => {
                 if self.cursor_x != 0 {
                     self.cursor_x -= 1;
                 } else if self.cursor_y > 0 {
@@ -46,13 +46,13 @@ impl CursorController {
                 }
             }
 
-            's' => {
+            'j' => {
                 if self.cursor_y < number_of_rows {
                     self.cursor_y += 1;
                 }
             }
 
-            'd' => {
+            'l' => {
                 if self.cursor_y < number_of_rows {
                     match self.cursor_x.cmp(&editor_rows.get_row(self.cursor_y).len()) {
                         Ordering::Less => self.cursor_x += 1,
@@ -66,7 +66,7 @@ impl CursorController {
                 }
             }
 
-            '4' => {
+            'e' => {
                 if self.cursor_y < number_of_rows {
                     self.cursor_x = editor_rows.get_row(self.cursor_y).len();
                 }
