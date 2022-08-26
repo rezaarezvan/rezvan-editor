@@ -1,5 +1,5 @@
-use crossterm::terminal;
 use crate::output;
+use crossterm::terminal;
 
 pub struct CleanUp;
 
